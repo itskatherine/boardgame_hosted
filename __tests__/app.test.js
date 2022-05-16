@@ -5,6 +5,24 @@ const db = require("../db/connection");
 const app = require("../app");
 const request = require("supertest");
 
+afterAll(() => db.end());
+
+beforeEach(() => seed(testData));
+
 describe("/api/categories", () => {
-  test("", () => {});
+  test("200: Returns a list of category objects (with properties slug and description) when get request", () => {
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+      .then((response) => {
+        const categoriesArr = response.body.categories;
+        expect(categoriesArr.length).toBe(4);
+        categoriesArr.forEach((category) => {
+          expect(category).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
 });
