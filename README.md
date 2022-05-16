@@ -17,11 +17,11 @@ We will be building an API for the purpose of accessing application data program
 Create `.env.test`:
 
 ```
-PGDATABASE=nc_games_test
+PGDATABASE=<test_database_name>
 ```
 
 Create `.env.development`:
 
 ```
-PGDATABASE=nc_games
+PGDATABASE=<dev_database_name>
 ```
