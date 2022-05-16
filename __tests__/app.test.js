@@ -35,7 +35,7 @@ describe("/api/categories", () => {
 });
 
 describe("/api/reviews/:review_id", () => {
-  test("Should return review when given valid id", () => {
+  test("200: Should return review when given valid id", () => {
     return request(app)
       .get("/api/reviews/1")
       .expect(200)
@@ -54,4 +54,14 @@ describe("/api/reviews/:review_id", () => {
         });
       });
   });
+  test("404: if the id doesnt exist should return 404 and message: No review exists with that id", () => {
+    return request(app)
+      .get("/api/reviews/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No review exists with that ID.");
+      });
+  });
 });
+
+//check if the id is the right datatype (400)

@@ -8,12 +8,14 @@ const getCategories = (req, res, next) => {
     .catch(next);
 };
 
-const getReviewById = (req, res) => {
+const getReviewById = (req, res, next) => {
   const id = req.params.review_id;
 
-  fetchReviewById(id).then((review) => {
-    res.status(200).send({ review });
-  });
+  fetchReviewById(id)
+    .then((review) => {
+      res.status(200).send({ review });
+    })
+    .catch(next);
 };
 
 module.exports = { getCategories, getReviewById };
