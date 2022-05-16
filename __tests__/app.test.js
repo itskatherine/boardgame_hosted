@@ -33,3 +33,25 @@ describe("/api/categories", () => {
       });
   });
 });
+
+describe("/api/reviews/:review_id", () => {
+  test("Should return review when given valid id", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then((response) => {
+        const review = response.body.review;
+        expect(review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(Number),
+        });
+      });
+  });
+});
