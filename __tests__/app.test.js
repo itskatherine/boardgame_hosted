@@ -50,7 +50,7 @@ describe("/api/reviews/:review_id", () => {
           votes: expect.any(Number),
           category: expect.any(String),
           owner: expect.any(String),
-          created_at: expect.any(Number),
+          created_at: expect.any(String),
         });
       });
   });

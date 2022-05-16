@@ -7,4 +7,14 @@ const fetchCategories = () => {
   });
 };
 
-module.exports = { fetchCategories };
+const fetchReviewById = (id) => {
+  const queryStr = `
+  SELECT * from reviews
+  WHERE review_id = $1;
+  `;
+  return db.query(queryStr, [id]).then((review) => {
+    return review.rows[0];
+  });
+};
+
+module.exports = { fetchCategories, fetchReviewById };

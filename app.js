@@ -1,10 +1,15 @@
 const express = require("express");
-const { getCategories } = require("./controllers/app.controller");
+const {
+  getCategories,
+  getReviewById,
+} = require("./controllers/app.controller");
 const { notARoute } = require("./controllers/error.controller");
 
 const app = express();
 
 app.get("/api/categories", getCategories);
+
+app.get("/api/reviews/:review_id", getReviewById);
 
 app.all("*", notARoute);
 
