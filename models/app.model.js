@@ -12,7 +12,7 @@ const fetchReviewById = (id) => {
   SELECT * from reviews
   WHERE review_id = $1;
   `;
-  console.log(id);
+
   return db.query(queryStr, [id]).then((reviewArr) => {
     const review = reviewArr.rows[0];
     if (!review) {

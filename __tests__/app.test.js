@@ -62,6 +62,14 @@ describe("/api/reviews/:review_id", () => {
         expect(response.body.msg).toBe("No review exists with that ID.");
       });
   });
+  test("400: if the is not a number, return 400 and message: Invalid data type", () => {
+    return request(app)
+      .get("/api/reviews/katherine")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid data type.");
+      });
+  });
 });
 
 //check if the id is the right datatype (400)
