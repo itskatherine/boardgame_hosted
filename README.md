@@ -12,7 +12,7 @@ We will be building an API for the purpose of accessing application data program
 
 ## Initialisation Instructions
 
-1. Create the development and testing .env files in the top level folder, so that you can connect locally to the test and development databases.
+1. Create the development and testing .env files in the root folder of the project, so that you can connect locally to the test and development databases.
 
 Create `.env.test`:
 
