@@ -18,4 +18,9 @@ const fetchReviewById = (id) => {
   });
 };
 
-module.exports = { fetchReviewById };
+const updateReviewById = (id) => {
+  console.log("model");
+  return true;
+};
+
+module.exports = { fetchReviewById, updateReviewById };

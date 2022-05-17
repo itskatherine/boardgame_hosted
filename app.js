@@ -1,6 +1,9 @@
 const express = require("express");
 const { getCategories } = require("./controllers/categories.controller");
-const { getReviewById } = require("./controllers/reviews.controller");
+const {
+  getReviewById,
+  patchReviewById,
+} = require("./controllers/reviews.controller");
 const {
   handleNotAnEndpoint,
   handlePSQLError,
@@ -11,8 +14,9 @@ const {
 const app = express();
 
 app.get("/api/categories", getCategories);
-
 app.get("/api/reviews/:review_id", getReviewById);
+
+app.patch("/api/reviews/:review_id", patchReviewById);
 
 app.all("*", handleNotAnEndpoint);
 
