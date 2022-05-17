@@ -128,7 +128,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
 
-  test("400: Provided with a request that does not contain the inc_votes returns unchanged review object", () => {
+  test("200: Provided with a request that does not contain the inc_votes returns unchanged review object", () => {
     const req = {};
     const expected = {
       review_id: 3,
