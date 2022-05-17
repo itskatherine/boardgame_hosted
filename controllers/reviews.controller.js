@@ -14,7 +14,7 @@ const getReviewById = (req, res, next) => {
 
 const patchReviewById = (req, res, next) => {
   const id = req.params.review_id;
-  const newVote = req.body.inc_votes;
+  const newVote = req.body.inc_votes || 0;
   updateReviewById(id, newVote)
     .then((updatedReview) => {
       res.status(200).send({ updatedReview });
