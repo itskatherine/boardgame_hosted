@@ -15,9 +15,11 @@ const getReviewById = (req, res, next) => {
 const patchReviewById = (req, res, next) => {
   const id = req.params.review_id;
   const newVote = req.body.inc_votes;
-  updateReviewById(id, newVote).then((updatedReview) => {
-    res.status(200).send({ updatedReview });
-  });
+  updateReviewById(id, newVote)
+    .then((updatedReview) => {
+      res.status(200).send({ updatedReview });
+    })
+    .catch(next);
 };
 
 module.exports = { getReviewById, patchReviewById };

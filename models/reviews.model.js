@@ -25,10 +25,23 @@ const updateReviewById = (id, newVote) => {
   return db
     .query(originalVoteQueryStr, [id])
     .then((response) => {
-      const originalVote = response.rows[0].votes;
+      const review = response.rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          msg: "No review exists with that ID.",
+        });
+      }
+      const originalVote = review.votes;
       return originalVote;
     })
     .then((originalVote) => {
+      if (typeof newVote != "number") {
+        return Promise.reject({
+          status: 400,
+          msg: "Invalid data type.",
+        });
+      }
       const updateVoteQueryStr = `
       UPDATE reviews
       SET
@@ -38,6 +51,7 @@ const updateReviewById = (id, newVote) => {
       `;
       return db.query(updateVoteQueryStr).then((updatedReviewObj) => {
         const updatedReview = updatedReviewObj.rows[0];
+
         return updatedReview;
       });
     });
