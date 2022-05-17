@@ -3,7 +3,12 @@ const {
   getCategories,
   getReviewById,
 } = require("./controllers/app.controller");
-const { notARoute } = require("./controllers/error.controller");
+const {
+  handleNotAnEndpoint,
+  handlePSQLError,
+  handleCustomError,
+  handleInternalServerError,
+} = require("./controllers/error.controller");
 
 const app = express();
 
@@ -11,26 +16,12 @@ app.get("/api/categories", getCategories);
 
 app.get("/api/reviews/:review_id", getReviewById);
 
-app.all("*", notARoute);
+app.all("*", handleNotAnEndpoint);
 
-app.use((err, req, res, next) => {
-  if (err.code == "22P02") {
-    res.status(400).send({ msg: "Invalid data type." });
-  } else {
-    next(err);
-  }
-});
+app.use(handlePSQLError);
 
-app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send({ msg: err.msg });
-  } else {
-    next(err);
-  }
-});
+app.use(handleCustomError);
 
-app.use((err, req, res, next) => {
-  res.status(500).send({ msg: "Internal server error" });
-});
+app.use(handleInternalServerError);
 
 module.exports = app;
