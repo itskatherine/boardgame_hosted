@@ -1,8 +1,6 @@
 const express = require("express");
-const {
-  getCategories,
-  getReviewById,
-} = require("./controllers/app.controller");
+const { getCategories } = require("./controllers/categories.controller");
+const { getReviewById } = require("./controllers/reviews.controller");
 const {
   handleNotAnEndpoint,
   handlePSQLError,
