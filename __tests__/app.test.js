@@ -160,7 +160,7 @@ describe("GET /api/users", () => {
       .then((response) => {
         const usersArr = response.body.users;
         expect(usersArr.length).toBe(4);
-        treasuresArr.forEach((user) => {
+        usersArr.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
             name: expect.any(String),
