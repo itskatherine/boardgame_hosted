@@ -72,4 +72,82 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
-//check if the id is the right datatype (400)
+describe("PATCH /api/reviews/:review_id", () => {
+  const req = { inc_votes: 5 };
+
+  test("200: When given a valid request body returns incremented/decremented vote count", () => {
+    const expected = {
+      review_id: 3,
+      title: "Ultimate Werewolf",
+      category: "social deduction",
+      designer: "Akihisa Okui",
+      owner: "bainesface",
+      review_body: "We couldn't find the werewolf!",
+      review_img_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      created_at: "2021-01-18T10:01:41.251Z",
+      votes: 10,
+    };
+    return request(app)
+      .patch("/api/reviews/3")
+      .send(req)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.updatedReview).toEqual(expected);
+      });
+  });
+
+  test("404: Provided with a number for an id but an review with that ID does not exist", () => {
+    return request(app)
+      .patch("/api/reviews/99999")
+      .send(req)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No review exists with that ID.");
+      });
+  });
+
+  test("400: Provided with a non number as the review id, returns an error", () => {
+    return request(app)
+      .patch("/api/reviews/katherine")
+      .send(req)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid data type.");
+      });
+  });
+
+  test("400: Provided with a non number as the votes in the request body (but valid review id), returns an error", () => {
+    const req = { inc_votes: "katherine" };
+    return request(app)
+      .patch("/api/reviews/3")
+      .send(req)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid data type.");
+      });
+  });
+
+  test("200: Provided with a request that does not contain the inc_votes returns unchanged review object", () => {
+    const req = {};
+    const expected = {
+      review_id: 3,
+      title: "Ultimate Werewolf",
+      category: "social deduction",
+      designer: "Akihisa Okui",
+      owner: "bainesface",
+      review_body: "We couldn't find the werewolf!",
+      review_img_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      created_at: "2021-01-18T10:01:41.251Z",
+      votes: 5,
+    };
+    return request(app)
+      .patch("/api/reviews/3")
+      .send(req)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.updatedReview).toEqual(expected);
+      });
+  });
+});
