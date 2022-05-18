@@ -190,13 +190,18 @@ describe("GET /api/reviews", () => {
       .then((response) => {
         const reviewsArr = response.body.reviews;
         expect(reviewsArr.length).toBe(13);
-        // reviewsArr.forEach((user) => {
-        //   expect(user).toMatchObject({
-        //     username: expect.any(String),
-        //     name: expect.any(String),
-        //     avatar_url: expect.any(String),
-        //   });
-        // }
+        reviewsArr.forEach((user) => {
+          expect(user).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
       });
   });
 });
