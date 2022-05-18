@@ -67,6 +67,15 @@ const fetchReviewCommentsFromId = (id) => {
 
   return db.query(queryStr, [id]).then((response) => {
     const comments = response.rows;
+    console.log(comments, "Comments");
+    if (!comments.length) {
+      return Promise.reject({
+        status: 404,
+        msg: "No review exists with that ID.",
+      });
+    }
+
+    //DO SOMETHING HERE TO CHECK IF REVIEW ID EXISTS
     return comments;
   });
 };

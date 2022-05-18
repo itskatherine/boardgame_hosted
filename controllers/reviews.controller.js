@@ -32,9 +32,12 @@ const getReviews = (req, res, next) => {
 
 const getReviewCommentsFromId = (req, res, next) => {
   const id = req.params.review_id;
-  fetchReviewCommentsFromId(id).then((comments) => {
-    res.status(200).send({ comments });
-  });
+  console.log(id, "CONTROLLER");
+  fetchReviewCommentsFromId(id)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
 };
 
 module.exports = {

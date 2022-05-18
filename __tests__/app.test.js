@@ -163,7 +163,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-describe("GET /api/reviews/:review_id/comments", () => {
+describe.only("GET /api/reviews/:review_id/comments", () => {
   test("200: Responds with an array of comments for review when given valid review id (for a review with comments)", () => {
     return request(app)
       .get("/api/reviews/2/comments")
@@ -181,6 +181,15 @@ describe("GET /api/reviews/:review_id/comments", () => {
             review_id: expect.any(Number),
           });
         });
+      });
+  });
+
+  test("404: Valid ID datatype, but review does not exist", () => {
+    return request(app)
+      .get("/api/reviews/9999/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No review exists with that ID.");
       });
   });
 });
