@@ -49,4 +49,12 @@ const updateReviewById = (id, newVote) => {
   });
 };
 
-module.exports = { fetchReviewById, updateReviewById };
+const fetchReviews = () => {
+  const queryStr = `SELECT * FROM reviews`;
+  return db.query(queryStr).then((response) => {
+    console.log(response.rows);
+    return response.rows;
+  });
+};
+
+module.exports = { fetchReviewById, updateReviewById, fetchReviews };
