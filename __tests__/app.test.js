@@ -166,11 +166,11 @@ describe("PATCH /api/reviews/:review_id", () => {
 describe("GET /api/reviews/:review_id/comments", () => {
   test("200: Responds with an array of comments for review when given valid review id", () => {
     return request(app)
-      .get("/api/reviews/1/comments")
+      .get("/api/reviews/2/comments")
       .expect(200)
       .then((response) => {
-        const { reviews } = response.body;
-        expect(reviews.length).toBe(3);
+        const { comments } = response.body;
+        expect(comments.length).toBe(3);
       });
     //3
   });

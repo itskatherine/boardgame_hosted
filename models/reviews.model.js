@@ -61,4 +61,18 @@ const fetchReviews = () => {
   });
 };
 
-module.exports = { fetchReviewById, updateReviewById, fetchReviews };
+const fetchReviewCommentsFromId = (id) => {
+  const queryStr = `SELECT * FROM comments
+  WHERE review_id = $1`;
+
+  return db.query(queryStr, [id]).then((response) => {
+    const comments = response.rows;
+    return comments;
+  });
+};
+module.exports = {
+  fetchReviewById,
+  updateReviewById,
+  fetchReviews,
+  fetchReviewCommentsFromId,
+};

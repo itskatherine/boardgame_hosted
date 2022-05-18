@@ -3,7 +3,8 @@ const { getCategories } = require("./controllers/categories.controller");
 const {
   getReviewById,
   patchReviewById,
-  getReviews
+  getReviews,
+  getReviewCommentsFromId,
 } = require("./controllers/reviews.controller");
 const {
   handleNotAnEndpoint,
@@ -21,6 +22,7 @@ app.get("/api/reviews/:review_id", getReviewById);
 
 app.get("/api/reviews", getReviews);
 app.patch("/api/reviews/:review_id", patchReviewById);
+app.get("/api/reviews/:review_id/comments", getReviewCommentsFromId);
 
 app.get("/api/users", getUsers);
 
