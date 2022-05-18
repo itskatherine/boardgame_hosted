@@ -9,7 +9,6 @@ const fetchReviewById = (id) => {
   `;
   return db.query(queryStr, [id]).then((reviewArr) => {
     const review = reviewArr.rows[0];
-    console.log(review);
     if (!review) {
       return Promise.reject({
         status: 404,

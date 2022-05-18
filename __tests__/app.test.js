@@ -71,7 +71,7 @@ describe("/api/reviews/:review_id", () => {
       });
   });
 
-  test.only("200: additional reviews count included in response (with valid id)", () => {
+  test("200: additional reviews count included in response (with valid id)", () => {
     return request(app)
       .get("/api/reviews/2")
       .expect(200)
