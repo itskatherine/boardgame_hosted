@@ -50,7 +50,11 @@ const updateReviewById = (id, newVote) => {
 };
 
 const fetchReviews = () => {
-  const queryStr = `SELECT * FROM reviews`;
+  const queryStr = `SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
+    FROM reviews 
+    LEFT JOIN comments ON reviews.review_id = comments.review_id
+    GROUP BY reviews.review_id
+    `;
   return db.query(queryStr).then((response) => {
     console.log(response.rows);
     return response.rows;
