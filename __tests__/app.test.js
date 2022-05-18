@@ -15,9 +15,9 @@ describe("/api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then((response) => {
-        const categoriesArr = response.body.categories;
-        expect(categoriesArr.length).toBe(4);
-        categoriesArr.forEach((category) => {
+        const { categories } = response.body;
+        expect(categories.length).toBe(4);
+        categories.forEach((category) => {
           expect(category).toMatchObject({
             slug: expect.any(String),
             description: expect.any(String),
@@ -169,9 +169,9 @@ describe("GET /api/users", () => {
       .get("/api/users")
       .expect(200)
       .then((response) => {
-        const usersArr = response.body.users;
-        expect(usersArr.length).toBe(4);
-        usersArr.forEach((user) => {
+        const { users } = response.body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
             name: expect.any(String),
@@ -188,9 +188,9 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then((response) => {
-        const reviewsArr = response.body.reviews;
-        expect(reviewsArr.length).toBe(13);
-        reviewsArr.forEach((user) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(13);
+        reviews.forEach((user) => {
           expect(user).toMatchObject({
             owner: expect.any(String),
             title: expect.any(String),
@@ -202,7 +202,7 @@ describe("GET /api/reviews", () => {
             comment_count: expect.any(Number),
           });
         });
-        expect(reviewsArr).toBeSorted({ descending: true, key: "created_at" });
+        expect(reviews).toBeSorted({ descending: true, key: "created_at" });
       });
   });
 });
