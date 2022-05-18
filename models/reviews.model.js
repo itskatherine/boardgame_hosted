@@ -49,4 +49,16 @@ const updateReviewById = (id, newVote) => {
   });
 };
 
-module.exports = { fetchReviewById, updateReviewById };
+const fetchReviews = () => {
+  const queryStr = `SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
+    FROM reviews 
+    LEFT JOIN comments ON reviews.review_id = comments.review_id
+    GROUP BY reviews.review_id
+    ORDER BY created_at DESC
+    `;
+  return db.query(queryStr).then((response) => {
+    return response.rows;
+  });
+};
+
+module.exports = { fetchReviewById, updateReviewById, fetchReviews };

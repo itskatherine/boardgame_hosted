@@ -3,6 +3,7 @@ const testData = require("../db/data/test-data");
 const db = require("../db/connection");
 const app = require("../app");
 const request = require("supertest");
+require("jest-sorted");
 
 afterAll(() => db.end());
 
@@ -14,9 +15,9 @@ describe("/api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then((response) => {
-        const categoriesArr = response.body.categories;
-        expect(categoriesArr.length).toBe(4);
-        categoriesArr.forEach((category) => {
+        const { categories } = response.body;
+        expect(categories.length).toBe(4);
+        categories.forEach((category) => {
           expect(category).toMatchObject({
             slug: expect.any(String),
             description: expect.any(String),
@@ -168,15 +169,40 @@ describe("GET /api/users", () => {
       .get("/api/users")
       .expect(200)
       .then((response) => {
-        const usersArr = response.body.users;
-        expect(usersArr.length).toBe(4);
-        usersArr.forEach((user) => {
+        const { users } = response.body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
             name: expect.any(String),
             avatar_url: expect.any(String),
           });
         });
+      });
+  });
+});
+
+describe("GET /api/reviews", () => {
+  test("200: Returns an array of review objects, sorted by descending date order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(13);
+        reviews.forEach((user) => {
+          expect(user).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+        expect(reviews).toBeSorted({ descending: true, key: "created_at" });
       });
   });
 });

@@ -3,6 +3,7 @@ const { getCategories } = require("./controllers/categories.controller");
 const {
   getReviewById,
   patchReviewById,
+  getReviews
 } = require("./controllers/reviews.controller");
 const {
   handleNotAnEndpoint,
@@ -18,6 +19,7 @@ app.use(express.json());
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewById);
 
+app.get("/api/reviews", getReviews);
 app.patch("/api/reviews/:review_id", patchReviewById);
 
 app.get("/api/users", getUsers);
