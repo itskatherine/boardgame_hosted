@@ -70,6 +70,16 @@ describe("/api/reviews/:review_id", () => {
         expect(response.body.msg).toBe("Invalid data type.");
       });
   });
+
+  test.only("200: additional reviews count included in response (with valid id)", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then((response) => {
+        const review = response.body.review;
+        expect(review).toEqual(expect.objectContaining({ comment_count: 3 }));
+      });
+  });
 });
 
 describe("PATCH /api/reviews/:review_id", () => {
