@@ -183,7 +183,7 @@ describe("GET /api/users", () => {
 });
 
 describe("GET /api/reviews", () => {
-  test("200: Returns an array of review objects", () => {
+  test("200: Returns an array of review objects, sorted by descending date order", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -202,6 +202,7 @@ describe("GET /api/reviews", () => {
             comment_count: expect.any(Number),
           });
         });
+        expect(reviewsArr).toBeSorted({ descending: true, key: "created_at" });
       });
   });
 });
