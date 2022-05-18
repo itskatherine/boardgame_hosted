@@ -3,6 +3,7 @@ const testData = require("../db/data/test-data");
 const db = require("../db/connection");
 const app = require("../app");
 const request = require("supertest");
+require("jest-sorted");
 
 afterAll(() => db.end());
 
@@ -177,6 +178,25 @@ describe("GET /api/users", () => {
             avatar_url: expect.any(String),
           });
         });
+      });
+  });
+});
+
+describe("GET /api/reviews", () => {
+  test("200: Returns an array of review objects", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((response) => {
+        const reviewsArr = response.body.reviews;
+        expect(reviewsArr.length).toBe(13);
+        // reviewsArr.forEach((user) => {
+        //   expect(user).toMatchObject({
+        //     username: expect.any(String),
+        //     name: expect.any(String),
+        //     avatar_url: expect.any(String),
+        //   });
+        // }
       });
   });
 });
