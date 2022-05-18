@@ -1,11 +1,12 @@
 const db = require("../db/connection");
 
 const fetchReviewById = (id) => {
-  const queryStr = `
-  SELECT * from reviews
-  WHERE review_id = $1;
+  const queryStr = `SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
+  FROM reviews 
+  LEFT JOIN comments ON reviews.review_id = comments.review_id
+  WHERE reviews.review_id = $1
+  GROUP BY reviews.review_id
   `;
-
   return db.query(queryStr, [id]).then((reviewArr) => {
     const review = reviewArr.rows[0];
     if (!review) {
