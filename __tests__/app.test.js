@@ -9,7 +9,7 @@ afterAll(() => db.end());
 
 beforeEach(() => seed(testData));
 
-describe("/api/categories", () => {
+describe("GET /api/categories", () => {
   test("200: Returns a list of category objects (with properties slug and description) when get request", () => {
     return request(app)
       .get("/api/categories")
@@ -35,7 +35,7 @@ describe("/api/categories", () => {
   });
 });
 
-describe("/api/reviews/:review_id", () => {
+describe("GET /api/reviews/:review_id", () => {
   test("200: Should return review when given valid id", () => {
     return request(app)
       .get("/api/reviews/1")
@@ -160,6 +160,19 @@ describe("PATCH /api/reviews/:review_id", () => {
       .then((response) => {
         expect(response.body.updatedReview).toEqual(expected);
       });
+  });
+});
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  test("200: Responds with an array of comments for review when given valid review id", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(3);
+      });
+    //3
   });
 });
 
