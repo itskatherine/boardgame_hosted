@@ -256,7 +256,7 @@ describe("GET /api/reviews", () => {
   });
 });
 
-describe.only("POST /api/reviews/:review_id/comments", () => {
+describe("POST /api/reviews/:review_id/comments", () => {
   test("201: When valid request body posted from a valid user, responds with comment object", () => {
     const req = {
       username: "mallionaire",
