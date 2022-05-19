@@ -64,13 +64,6 @@ const fetchReviews = (sort_by = "created_at", order = "DESC", category) => {
 
   const validOrders = ["ASC", "DESC"];
 
-  const validCategories = [
-    "euro game",
-    "social deduction",
-    "dexterity",
-    "children's games",
-  ];
-
   if (!validSortBys.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "Invalid sort query" });
   }
@@ -79,31 +72,37 @@ const fetchReviews = (sort_by = "created_at", order = "DESC", category) => {
     return Promise.reject({ status: 400, msg: "Invalid order query" });
   }
 
-  if (category) {
-    if (!validCategories.includes(category)) {
-      return Promise.reject({ status: 400, msg: "Invalid category filter" });
-    } else {
-      categoryQueryLine = ` WHERE category = '${category}' `;
-    }
-  }
+  return (findCategoriesFromDB = db
+    .query(`SELECT slug FROM categories`)
+    .then((categories) => {
+      const allCategoriesInDB = categories.rows.map(
+        (categoryObj) => categoryObj.slug
+      );
 
-  // const findCategoriesFromDB = db
-  //   .query(`SELECT slug FROM categories`)
-  //   .then((categories) => {
-  //     console.log(categories);
-  //     return categories;
-  //   });
+      if (category) {
+        if (!allCategoriesInDB.includes(category)) {
+          return Promise.reject({
+            status: 400,
+            msg: "Invalid category filter",
+          });
+        } else {
+          categoryQueryLine = ` WHERE category = '${category}' `;
+        }
+      }
 
-  const queryStr = `SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
-    FROM reviews 
-    LEFT JOIN comments ON reviews.review_id = comments.review_id
-    ${categoryQueryLine}
-    GROUP BY reviews.review_id
-    ORDER BY ${sort_by} ${order}
-    `;
-
-  return db.query(queryStr).then((response) => {
-    return response.rows;
+      const queryStr = `
+      SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
+      FROM reviews 
+      LEFT JOIN comments ON reviews.review_id = comments.review_id
+      ${categoryQueryLine}
+      GROUP BY reviews.review_id
+      ORDER BY ${sort_by} ${order}
+      `;
+      return queryStr;
+    })).then((queryStr) => {
+    return db.query(queryStr).then((response) => {
+      return response.rows;
+    });
   });
 };
 
