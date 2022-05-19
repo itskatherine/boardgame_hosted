@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const db = require("../db/connection");
 
 const fetchReviewById = (id) => {
@@ -61,4 +62,31 @@ const fetchReviews = () => {
   });
 };
 
-module.exports = { fetchReviewById, updateReviewById, fetchReviews };
+const fetchReviewCommentsFromId = (id) => {
+  const queryStr = `SELECT * FROM comments
+  WHERE review_id = $1`;
+  const returnReviewIfExists = fetchReviewById(id);
+  const returnCommentsIfExist = db.query(queryStr, [id]).then((response) => {
+    const comments = response.rows;
+    return comments;
+  });
+
+  let promises = [returnReviewIfExists, returnCommentsIfExist];
+
+  return Promise.all(promises).then(([review, comments]) => {
+    if (!review) {
+      return Promise.reject({
+        status: 404,
+        msg: "No review exists with that ID.",
+      });
+    }
+    return comments;
+  });
+};
+
+module.exports = {
+  fetchReviewById,
+  updateReviewById,
+  fetchReviews,
+  fetchReviewCommentsFromId,
+};
