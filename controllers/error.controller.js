@@ -4,7 +4,7 @@ const handleNotAnEndpoint = (req, res) => {
 
 const handlePSQLError = (err, req, res, next) => {
   if (err.code) {
-    console.log(err.code);
+    console.log(err.code, "Error code");
   }
   if (err.code == "22P02") {
     res.status(400).send({ msg: "Invalid data type." });

@@ -32,7 +32,6 @@ const getReviews = (req, res, next) => {
 
 const getReviewCommentsFromId = (req, res, next) => {
   const id = req.params.review_id;
-  console.log(id, "CONTROLLER");
   fetchReviewCommentsFromId(id)
     .then((comments) => {
       res.status(200).send({ comments });

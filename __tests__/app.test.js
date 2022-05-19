@@ -163,7 +163,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/reviews/:review_id/comments", () => {
+describe("GET /api/reviews/:review_id/comments", () => {
   test("200: Responds with an array of comments for review when given valid review id (for a review with comments)", () => {
     return request(app)
       .get("/api/reviews/2/comments")
@@ -190,6 +190,25 @@ describe.only("GET /api/reviews/:review_id/comments", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("No review exists with that ID.");
+      });
+  });
+
+  test("400: Invalid datatype", () => {
+    return request(app)
+      .get("/api/reviews/katherine/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid data type.");
+      });
+  });
+
+  test("200: Valid ID, valid datatype, but no comments exist for that review", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then((response) => {
+        console.log(response.body.comments);
+        expect(response.body.comments).toEqual([]);
       });
   });
 });
