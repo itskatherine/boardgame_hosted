@@ -212,6 +212,38 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("201: When valid request body posted from a valid user, responds with comment object", () => {
+    const req = {
+      username: "mallionaire",
+      body: "Hello what a cool boardgame.",
+    };
+
+    //example of a comment
+    const comment = {
+      comment_id: 4,
+      body: "Hello what a cool boardgame.",
+      review_id: 2,
+      author: "mallionaire",
+      votes: 16,
+      created_at: "2017-11-22T12:36:03.389Z",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(201)
+      .then((res) => {
+        expect(res.body.comment).toEqual(
+          expect.objectContaining({
+            body: "Hello what a cool boardgame.",
+            author: "mallionaire",
+            review_id: 1,
+          })
+        );
+      });
+  });
+});
+
 describe("GET /api/users", () => {
   test("Returns an array of users", () => {
     return request(app)
