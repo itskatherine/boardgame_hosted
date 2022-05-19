@@ -255,13 +255,31 @@ describe.only("GET /api/reviews", () => {
       });
   });
 
-  test('200: returns an array of reviews sorted by the "sort_by query provided', () => {
+  test('200: returns an array of reviews sorted by a numerical "sort_by" query provided', () => {
     return request(app)
-      .get("/api/reviews?order_by=title")
+      .get("/api/reviews?sort_by=review_id")
       .expect(200)
       .then((response) => {
         const { reviews } = response.body;
-        expect(reviews).toBeSorted({ descending: true, key: "title" });
+        expect(reviews).toBeSorted({ descending: true, key: "review_id" });
+      });
+  });
+  test('200: returns an array of reviews sorted by a text-based "sort_by" query provided (alphabetised)', () => {
+    return request(app)
+      .get("/api/reviews?sort_by=category")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSorted({ descending: true, key: "category" });
+      });
+  });
+
+  test("400: check sort by query limited to valid keys", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=katherine")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request.");
       });
   });
   //check sort by limited to list of keys

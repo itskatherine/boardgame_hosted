@@ -49,12 +49,30 @@ const updateReviewById = (id, newVote) => {
   });
 };
 
-const fetchReviews = () => {
+const fetchReviews = (sort_by = "created_at") => {
+  const validSortCategories = [
+    "owner",
+    "title",
+    "review_id",
+    "category",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+
+  if (!validSortCategories.includes(sort_by)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request.",
+    });
+  }
+
   const queryStr = `SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
     FROM reviews 
     LEFT JOIN comments ON reviews.review_id = comments.review_id
     GROUP BY reviews.review_id
-    ORDER BY created_at DESC
+    ORDER BY ${sort_by} DESC
     `;
   return db.query(queryStr).then((response) => {
     return response.rows;
