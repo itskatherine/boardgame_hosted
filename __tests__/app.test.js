@@ -212,82 +212,6 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe("POST /api/reviews/:review_id/comments", () => {
-  test("201: When valid request body posted from a valid user, responds with comment object", () => {
-    const req = {
-      username: "mallionaire",
-      body: "Hello what a cool boardgame.",
-    };
-
-    //example of a comment
-    const comment = {
-      comment_id: 4,
-      body: "Hello what a cool boardgame.",
-      review_id: 2,
-      author: "mallionaire",
-      votes: 16,
-      created_at: "2017-11-22T12:36:03.389Z",
-    };
-    return request(app)
-      .post("/api/reviews/1/comments")
-      .send(req)
-      .expect(201)
-      .then((res) => {
-        expect(res.body.comment).toEqual(
-          expect.objectContaining({
-            comment_id: expect.any(Number),
-            body: "Hello what a cool boardgame.",
-            review_id: 1,
-            author: "mallionaire",
-            votes: expect.any(Number),
-            created_at: expect.any(String),
-          })
-        );
-      });
-  });
-  test("400: Returns error msg when comment body does not contain necessary keys", () => {
-    const req = {
-      body: "Hello ignore me.",
-    };
-
-    return request(app)
-      .post("/api/reviews/1/comments")
-      .send(req)
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe("Bad request.");
-      });
-  });
-  test("404: When review does not exist, returns 404 error", () => {
-    const req = {
-      username: "mallionaire",
-      body: "Hello what a cool boardgame.",
-    };
-
-    return request(app)
-      .post("/api/reviews/999999/comments")
-      .send(req)
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("No review exists with that ID.");
-      });
-  });
-  test("404: When user does not exist returns error", () => {
-    const req = {
-      username: "katherine",
-      body: "Boardgames are the worst.",
-    };
-
-    return request(app)
-      .post("/api/reviews/1/comments")
-      .send(req)
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("No user exists with that ID.");
-      });
-  });
-});
-
 describe("GET /api/users", () => {
   test("Returns an array of users", () => {
     return request(app)
@@ -328,6 +252,80 @@ describe("GET /api/reviews", () => {
           });
         });
         expect(reviews).toBeSorted({ descending: true, key: "created_at" });
+      });
+  });
+});
+
+describe.only("POST /api/reviews/:review_id/comments", () => {
+  test("201: When valid request body posted from a valid user, responds with comment object", () => {
+    const req = {
+      username: "mallionaire",
+      body: "Hello what a cool boardgame.",
+    };
+
+    //example of a comment
+    const comment = {
+      comment_id: 4,
+      body: "Hello what a cool boardgame.",
+      review_id: 2,
+      author: "mallionaire",
+      votes: 16,
+      created_at: "2017-11-22T12:36:03.389Z",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(201)
+      .then((res) => {
+        expect(res.body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "Hello what a cool boardgame.",
+            review_id: 1,
+            author: "mallionaire",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("400: Returns error msg when comment body does not contain necessary keys", () => {
+    const req = {};
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request.");
+      });
+  });
+  test("404: When review does not exist, returns 404 error", () => {
+    const req = {
+      username: "mallionaire",
+      body: "Hello what a cool boardgame.",
+    };
+
+    return request(app)
+      .post("/api/reviews/999999/comments")
+      .send(req)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No review exists with that ID.");
+      });
+  });
+  test("404: When user does not exist returns error", () => {
+    const req = {
+      username: "katherine",
+      body: "Boardgames are the worst.",
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No user exists with that username.");
       });
   });
 });

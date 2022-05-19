@@ -80,6 +80,13 @@ const fetchReviewCommentsFromId = (id) => {
 
 const updateCommentToReviewFromId = (id, reqBody) => {
   const { body, username } = reqBody;
+  if (!body || !username) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request.",
+    });
+  }
+
   const commentQueryStr = `
   INSERT INTO comments
   (body, review_id, author)
@@ -91,15 +98,18 @@ const updateCommentToReviewFromId = (id, reqBody) => {
   const userExists = db.query(`SELECT * FROM users WHERE username = $1`, [
     username,
   ]);
-  const updateComment = db
-    .query(commentQueryStr, [body, id, username])
-    .then((response) => {
+
+  const promises = [reviewExists, userExists];
+  return Promise.all(promises).then(([reviews, user]) => {
+    if (!user.rows[0]) {
+      return Promise.reject({
+        status: 404,
+        msg: "No user exists with that username.",
+      });
+    }
+    return db.query(commentQueryStr, [body, id, username]).then((response) => {
       return response.rows[0];
     });
-
-  const promises = [reviewExists, userExists, updateComment];
-  return Promise.all(promises).then(([reviews, user, updateComment]) => {
-    return updateComment;
   });
 };
 
