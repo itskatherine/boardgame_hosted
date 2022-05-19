@@ -93,19 +93,13 @@ const updateCommentToReviewFromId = (id, reqBody) => {
   ($1, $2, $3)
   RETURNING *;`;
 
-  const reviewExists = fetchReviewById(id).then((review) => review);
+  const reviewExists = fetchReviewById(id);
   const userExists = db.query(`SELECT * FROM users WHERE username = $1`, [
     username,
   ]);
 
   const promises = [reviewExists, userExists];
   return Promise.all(promises).then(([reviews, user]) => {
-    if (!user.rows[0]) {
-      return Promise.reject({
-        status: 404,
-        msg: "No user exists with that username.",
-      });
-    }
     return db.query(commentQueryStr, [body, id, username]).then((response) => {
       return response.rows[0];
     });

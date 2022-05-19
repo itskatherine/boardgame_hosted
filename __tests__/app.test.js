@@ -263,15 +263,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
       body: "Hello what a cool boardgame.",
     };
 
-    //example of a comment
-    const comment = {
-      comment_id: 4,
-      body: "Hello what a cool boardgame.",
-      review_id: 2,
-      author: "mallionaire",
-      votes: 16,
-      created_at: "2017-11-22T12:36:03.389Z",
-    };
     return request(app)
       .post("/api/reviews/1/comments")
       .send(req)
@@ -300,6 +291,22 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(response.body.msg).toBe("Bad request.");
       });
   });
+
+  test("400: Returns error msg when incorrect datatype supplied in req body", () => {
+    const req = {
+      username: "mallionaire",
+      body: 1,
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request.");
+      });
+  });
+
   test("404: When review does not exist, returns 404 error", () => {
     const req = {
       username: "mallionaire",
