@@ -1,4 +1,3 @@
-const { CommandCompleteMessage } = require("pg-protocol/dist/messages");
 const db = require("../db/connection");
 
 const fetchReviewById = (id) => {
