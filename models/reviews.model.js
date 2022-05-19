@@ -50,6 +50,7 @@ const updateReviewById = (id, newVote) => {
 };
 
 const fetchReviews = (sort_by = "created_at", order = "DESC", category) => {
+  order = order.toUpperCase();
   let categoryQueryLine = "";
   const validSortBys = [
     "owner",

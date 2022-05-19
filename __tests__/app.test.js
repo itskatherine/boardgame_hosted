@@ -285,7 +285,7 @@ describe("GET /api/reviews", () => {
 
   test("200: returns an array of items provided in asc or desc order when provided valid order arg", () => {
     return request(app)
-      .get("/api/reviews?order=ASC")
+      .get("/api/reviews?order=asc")
       .expect(200)
       .then((response) => {
         const { reviews } = response.body;
@@ -324,8 +324,6 @@ describe("GET /api/reviews", () => {
         expect(response.body.msg).toBe("Invalid category filter");
       });
   });
-  //check filter by category
-  //check categories limited to categories in the db
 });
 
 describe("POST /api/reviews/:review_id/comments", () => {
