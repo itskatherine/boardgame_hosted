@@ -5,6 +5,7 @@ const {
   patchReviewById,
   getReviews,
   getReviewCommentsFromId,
+  postCommentToReviewFromId,
 } = require("./controllers/reviews.controller");
 const {
   handleNotAnEndpoint,
@@ -23,6 +24,7 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews", getReviews);
 app.patch("/api/reviews/:review_id", patchReviewById);
 app.get("/api/reviews/:review_id/comments", getReviewCommentsFromId);
+app.post("/api/reviews/:review_id/comments", postCommentToReviewFromId);
 
 app.get("/api/users", getUsers);
 

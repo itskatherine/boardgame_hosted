@@ -235,9 +235,12 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .then((res) => {
         expect(res.body.comment).toEqual(
           expect.objectContaining({
+            comment_id: expect.any(Number),
             body: "Hello what a cool boardgame.",
-            author: "mallionaire",
             review_id: 1,
+            author: "mallionaire",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
           })
         );
       });

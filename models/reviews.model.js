@@ -1,4 +1,3 @@
-const res = require("express/lib/response");
 const db = require("../db/connection");
 
 const fetchReviewById = (id) => {
@@ -84,9 +83,25 @@ const fetchReviewCommentsFromId = (id) => {
   });
 };
 
+const updateCommentToReviewFromId = (id, reqBody) => {
+  const { body, username } = reqBody;
+
+  const queryStr = `
+  INSERT INTO comments
+  (body, review_id, author)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *;`;
+
+  return db.query(queryStr, [body, id, username]).then((response) => {
+    return response.rows[0];
+  });
+};
+
 module.exports = {
   fetchReviewById,
   updateReviewById,
   fetchReviews,
   fetchReviewCommentsFromId,
+  updateCommentToReviewFromId,
 };
