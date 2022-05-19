@@ -3,6 +3,7 @@ const {
   updateReviewById,
   fetchReviews,
   fetchReviewCommentsFromId,
+  updateCommentToReviewFromId,
 } = require("../models/reviews.model.js");
 
 const getReviewById = (req, res, next) => {
@@ -39,9 +40,21 @@ const getReviewCommentsFromId = (req, res, next) => {
     .catch(next);
 };
 
+const postCommentToReviewFromId = (req, res, next) => {
+  const id = req.params.review_id;
+  const body = req.body;
+
+  updateCommentToReviewFromId(id, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
 module.exports = {
   getReviewById,
   patchReviewById,
   getReviews,
   getReviewCommentsFromId,
+  postCommentToReviewFromId,
 };

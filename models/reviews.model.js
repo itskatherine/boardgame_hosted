@@ -1,4 +1,3 @@
-const res = require("express/lib/response");
 const db = require("../db/connection");
 
 const fetchReviewById = (id) => {
@@ -71,16 +70,44 @@ const fetchReviewCommentsFromId = (id) => {
     return comments;
   });
 
-  let promises = [returnReviewIfExists, returnCommentsIfExist];
+  const promises = [returnReviewIfExists, returnCommentsIfExist];
 
   return Promise.all(promises).then(([review, comments]) => {
-    if (!review) {
-      return Promise.reject({
-        status: 404,
-        msg: "No review exists with that ID.",
-      });
-    }
     return comments;
+  });
+};
+
+const updateCommentToReviewFromId = (id, reqBody) => {
+  const { body, username } = reqBody;
+  if (
+    !body ||
+    !username ||
+    typeof body != "string" ||
+    typeof username != "string"
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad request.",
+    });
+  }
+
+  const commentQueryStr = `
+  INSERT INTO comments
+  (body, review_id, author)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *;`;
+
+  const reviewExists = fetchReviewById(id);
+  const userExists = db.query(`SELECT * FROM users WHERE username = $1`, [
+    username,
+  ]);
+
+  const promises = [reviewExists, userExists];
+  return Promise.all(promises).then(([reviews, user]) => {
+    return db.query(commentQueryStr, [body, id, username]).then((response) => {
+      return response.rows[0];
+    });
   });
 };
 
@@ -89,4 +116,5 @@ module.exports = {
   updateReviewById,
   fetchReviews,
   fetchReviewCommentsFromId,
+  updateCommentToReviewFromId,
 };
