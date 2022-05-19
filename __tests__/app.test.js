@@ -295,7 +295,22 @@ describe("POST /api/reviews/:review_id/comments", () => {
   test("400: Returns error msg when incorrect datatype supplied in req body", () => {
     const req = {
       username: "mallionaire",
-      body: 1,
+      body: {},
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request.");
+      });
+  });
+
+  test("400: Returns error msg when incorrect datatype supplied in req username", () => {
+    const req = {
+      username: 123,
+      body: "Boardgames rule",
     };
 
     return request(app)

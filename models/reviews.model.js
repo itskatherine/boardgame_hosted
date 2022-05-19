@@ -79,7 +79,12 @@ const fetchReviewCommentsFromId = (id) => {
 
 const updateCommentToReviewFromId = (id, reqBody) => {
   const { body, username } = reqBody;
-  if (!body || !username) {
+  if (
+    !body ||
+    !username ||
+    typeof body != "string" ||
+    typeof username != "string"
+  ) {
     return Promise.reject({
       status: 400,
       msg: "Bad request.",
