@@ -245,6 +245,19 @@ describe("POST /api/reviews/:review_id/comments", () => {
         );
       });
   });
+  test("400: Returns error msg when comment body does not contain necessary keys", () => {
+    const req = {
+      body: "Hello ignore me.",
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request.");
+      });
+  });
 });
 
 describe("GET /api/users", () => {
