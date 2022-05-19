@@ -1,3 +1,4 @@
+const { CommandCompleteMessage } = require("pg-protocol/dist/messages");
 const db = require("../db/connection");
 
 const fetchReviewById = (id) => {
@@ -70,31 +71,35 @@ const fetchReviewCommentsFromId = (id) => {
     return comments;
   });
 
-  let promises = [returnReviewIfExists, returnCommentsIfExist];
+  const promises = [returnReviewIfExists, returnCommentsIfExist];
 
   return Promise.all(promises).then(([review, comments]) => {
-    if (!review) {
-      return Promise.reject({
-        status: 404,
-        msg: "No review exists with that ID.",
-      });
-    }
     return comments;
   });
 };
 
 const updateCommentToReviewFromId = (id, reqBody) => {
   const { body, username } = reqBody;
-
-  const queryStr = `
+  const commentQueryStr = `
   INSERT INTO comments
   (body, review_id, author)
   VALUES
   ($1, $2, $3)
   RETURNING *;`;
 
-  return db.query(queryStr, [body, id, username]).then((response) => {
-    return response.rows[0];
+  const reviewExists = fetchReviewById(id).then((review) => review);
+  const userExists = db.query(`SELECT * FROM users WHERE username = $1`, [
+    username,
+  ]);
+  const updateComment = db
+    .query(commentQueryStr, [body, id, username])
+    .then((response) => {
+      return response.rows[0];
+    });
+
+  const promises = [reviewExists, userExists, updateComment];
+  return Promise.all(promises).then(([reviews, user, updateComment]) => {
+    return updateComment;
   });
 };
 

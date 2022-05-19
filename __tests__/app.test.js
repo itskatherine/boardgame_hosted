@@ -258,6 +258,34 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(response.body.msg).toBe("Bad request.");
       });
   });
+  test("404: When review does not exist, returns 404 error", () => {
+    const req = {
+      username: "mallionaire",
+      body: "Hello what a cool boardgame.",
+    };
+
+    return request(app)
+      .post("/api/reviews/999999/comments")
+      .send(req)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No review exists with that ID.");
+      });
+  });
+  test("404: When user does not exist returns error", () => {
+    const req = {
+      username: "katherine",
+      body: "Boardgames are the worst.",
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(req)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No user exists with that ID.");
+      });
+  });
 });
 
 describe("GET /api/users", () => {
