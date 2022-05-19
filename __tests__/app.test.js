@@ -231,7 +231,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe("GET /api/reviews", () => {
+describe.only("GET /api/reviews", () => {
   test("200: Returns an array of review objects, sorted by descending date order", () => {
     return request(app)
       .get("/api/reviews")
@@ -254,6 +254,21 @@ describe("GET /api/reviews", () => {
         expect(reviews).toBeSorted({ descending: true, key: "created_at" });
       });
   });
+
+  test('200: returns an array of reviews sorted by the "sort_by query provided', () => {
+    return request(app)
+      .get("/api/reviews?order_by=title")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSorted({ descending: true, key: "title" });
+      });
+  });
+  //check sort by limited to list of keys
+  //checks array changed by order value
+  //check order values limited to asc or desc
+  //check sort by category
+  //check categories limited to categories in the db
 });
 
 describe("POST /api/reviews/:review_id/comments", () => {
