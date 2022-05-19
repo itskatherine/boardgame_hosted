@@ -231,7 +231,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("GET /api/reviews", () => {
+describe("GET /api/reviews", () => {
   test("200: Returns an array of review objects, sorted by descending date order", () => {
     return request(app)
       .get("/api/reviews")
@@ -279,13 +279,52 @@ describe.only("GET /api/reviews", () => {
       .get("/api/reviews?sort_by=katherine")
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Bad request.");
+        expect(response.body.msg).toBe("Invalid sort query");
       });
   });
-  //check sort by limited to list of keys
-  //checks array changed by order value
-  //check order values limited to asc or desc
-  //check sort by category
+
+  test("200: returns an array of items provided in asc or desc order when provided valid order arg", () => {
+    return request(app)
+      .get("/api/reviews?order=ASC")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSorted({ descending: false, key: "created_at" });
+      });
+  });
+
+  test("400: bad request when order not valid (not ASC or DESC)", () => {
+    return request(app)
+      .get("/api/reviews?order=KATHERINE")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid order query");
+      });
+  });
+
+  test("200: filters by category when provided with valid category", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(1);
+        reviews.forEach((user) => {
+          expect(user).toMatchObject({
+            category: "dexterity",
+          });
+        });
+      });
+  });
+  test("400: If given invalid category to filter by, should return error message", () => {
+    return request(app)
+      .get("/api/reviews?category=katherine")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid category filter");
+      });
+  });
+  //check filter by category
   //check categories limited to categories in the db
 });
 

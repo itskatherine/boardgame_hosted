@@ -49,8 +49,9 @@ const updateReviewById = (id, newVote) => {
   });
 };
 
-const fetchReviews = (sort_by = "created_at") => {
-  const validSortCategories = [
+const fetchReviews = (sort_by = "created_at", order = "DESC", category) => {
+  let categoryQueryLine = "";
+  const validSortBys = [
     "owner",
     "title",
     "review_id",
@@ -61,19 +62,46 @@ const fetchReviews = (sort_by = "created_at") => {
     "comment_count",
   ];
 
-  if (!validSortCategories.includes(sort_by)) {
-    return Promise.reject({
-      status: 400,
-      msg: "Bad request.",
-    });
+  const validOrders = ["ASC", "DESC"];
+
+  const validCategories = [
+    "euro game",
+    "social deduction",
+    "dexterity",
+    "children's games",
+  ];
+
+  if (!validSortBys.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Invalid sort query" });
   }
+
+  if (!validOrders.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+  }
+
+  if (category) {
+    if (!validCategories.includes(category)) {
+      return Promise.reject({ status: 400, msg: "Invalid category filter" });
+    } else {
+      categoryQueryLine = ` WHERE category = '${category}' `;
+    }
+  }
+
+  // const findCategoriesFromDB = db
+  //   .query(`SELECT slug FROM categories`)
+  //   .then((categories) => {
+  //     console.log(categories);
+  //     return categories;
+  //   });
 
   const queryStr = `SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
     FROM reviews 
     LEFT JOIN comments ON reviews.review_id = comments.review_id
+    ${categoryQueryLine}
     GROUP BY reviews.review_id
-    ORDER BY ${sort_by} DESC
+    ORDER BY ${sort_by} ${order}
     `;
+
   return db.query(queryStr).then((response) => {
     return response.rows;
   });
