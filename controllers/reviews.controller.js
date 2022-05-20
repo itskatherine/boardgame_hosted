@@ -26,9 +26,13 @@ const patchReviewById = (req, res, next) => {
 };
 
 const getReviews = (req, res, next) => {
-  fetchReviews().then((reviews) => {
-    res.status(200).send({ reviews });
-  });
+  const { sort_by, order, category } = req.query;
+
+  fetchReviews(sort_by, order, category)
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch(next);
 };
 
 const getReviewCommentsFromId = (req, res, next) => {

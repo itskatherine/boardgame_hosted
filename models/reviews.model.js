@@ -49,15 +49,63 @@ const updateReviewById = (id, newVote) => {
   });
 };
 
-const fetchReviews = () => {
-  const queryStr = `SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
-    FROM reviews 
-    LEFT JOIN comments ON reviews.review_id = comments.review_id
-    GROUP BY reviews.review_id
-    ORDER BY created_at DESC
-    `;
-  return db.query(queryStr).then((response) => {
-    return response.rows;
+const fetchReviews = (sort_by = "created_at", order = "DESC", category) => {
+  order = order.toUpperCase();
+
+  let categoryQueryLine = "";
+  const validSortBys = [
+    "owner",
+    "title",
+    "review_id",
+    "category",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+
+  const validOrders = ["ASC", "DESC"];
+
+  if (!validSortBys.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Invalid sort query" });
+  }
+
+  if (!validOrders.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+  }
+
+  return (findCategoriesFromDB = db
+    .query(`SELECT slug FROM categories`)
+    .then((categories) => {
+      const allCategoriesInDB = categories.rows.map(
+        (categoryObj) => categoryObj.slug
+      );
+
+      if (category) {
+        if (!allCategoriesInDB.includes(category)) {
+          return Promise.reject({
+            status: 404,
+            msg: "Invalid category filter",
+          });
+        } else {
+          category = category.replace("'", "''");
+          categoryQueryLine = ` WHERE category = '${category}' `;
+        }
+      }
+
+      const queryStr = `
+      SELECT reviews.*, COUNT(comments.*)::INT AS comment_count 
+      FROM reviews 
+      LEFT JOIN comments ON reviews.review_id = comments.review_id
+      ${categoryQueryLine}
+      GROUP BY reviews.review_id
+      ORDER BY ${sort_by} ${order}
+      `;
+      return queryStr;
+    })).then((queryStr) => {
+    return db.query(queryStr).then((response) => {
+      return response.rows;
+    });
   });
 };
 

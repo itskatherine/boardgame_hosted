@@ -254,6 +254,85 @@ describe("GET /api/reviews", () => {
         expect(reviews).toBeSorted({ descending: true, key: "created_at" });
       });
   });
+
+  test('200: returns an array of reviews sorted by a numerical "sort_by" query provided', () => {
+    return request(app)
+      .get("/api/reviews?sort_by=review_id")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSorted({ descending: true, key: "review_id" });
+      });
+  });
+  test('200: returns an array of reviews sorted by a text-based "sort_by" query provided (alphabetised)', () => {
+    return request(app)
+      .get("/api/reviews?sort_by=category")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSorted({ descending: true, key: "category" });
+      });
+  });
+
+  test("400: check sort by query limited to valid keys", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=katherine")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid sort query");
+      });
+  });
+
+  test("200: returns an array of items provided in asc or desc order when provided valid order arg", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSorted({ descending: false, key: "created_at" });
+      });
+  });
+
+  test("400: bad request when order not valid (not ASC or DESC)", () => {
+    return request(app)
+      .get("/api/reviews?order=KATHERINE")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid order query");
+      });
+  });
+
+  test("200: filters by category when provided with valid category", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(1);
+        reviews.forEach((user) => {
+          expect(user).toMatchObject({
+            category: "dexterity",
+          });
+        });
+      });
+  });
+  test("404: If given invalid category to filter by, should return error message", () => {
+    return request(app)
+      .get("/api/reviews?category=katherine")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid category filter");
+      });
+  });
+
+  test("200: category exists but no reviews exist with it", () => {
+    return request(app)
+      .get("/api/reviews?category=children%27s%20games")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.reviews).toEqual([]);
+      });
+  });
 });
 
 describe("POST /api/reviews/:review_id/comments", () => {
