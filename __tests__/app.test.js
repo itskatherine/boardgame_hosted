@@ -459,7 +459,6 @@ describe("GET /api", () => {
       .expect(200)
       .then((response) => {
         const { api } = response.body;
-        expect(api).not.toBe(undefined);
         expect(api["GET /api"].description).toBe(
           "serves up a json representation of all the available endpoints of the api"
         );
