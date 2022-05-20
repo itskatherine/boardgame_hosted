@@ -3,6 +3,7 @@ const testData = require("../db/data/test-data");
 const db = require("../db/connection");
 const app = require("../app");
 const request = require("supertest");
+const { TestWatcher } = require("jest");
 require("jest-sorted");
 
 afterAll(() => db.end());
@@ -427,6 +428,29 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("No user exists with that username.");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Deletes comment with valid id", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("404: returns error if comment does not exist with that id", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No comment exists with that ID.");
+      });
+  });
+
+  test("400: when comment id with invalid datatype provided, sends error", () => {
+    return request(app)
+      .delete("/api/comments/katherine")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid data type.");
       });
   });
 });
