@@ -14,6 +14,7 @@ const {
   handleInternalServerError,
 } = require("./controllers/error.controller");
 const { getUsers } = require("./controllers/users.controller");
+const { deleteComment } = require("./controllers/comments.controller");
 
 const app = express();
 app.use(express.json());
@@ -27,6 +28,8 @@ app.get("/api/reviews/:review_id/comments", getReviewCommentsFromId);
 app.post("/api/reviews/:review_id/comments", postCommentToReviewFromId);
 
 app.get("/api/users", getUsers);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("*", handleNotAnEndpoint);
 

@@ -432,14 +432,10 @@ describe("POST /api/reviews/:review_id/comments", () => {
 });
 
 describe.only("DELETE /api/comments/:comment_id", () => {
-  test("204: Deletes command with valid id", () => {
-    return request(app)
-      .delete("/api/comments/1")
-      .expect(204)
-      .then((response) => {
-        expect(response.body.msg).toBe("No Content");
-      });
+  test("204: Deletes comment with valid id", () => {
+    return request(app).delete("/api/comments/1").expect(204);
   });
+
   //404 comment_id doesn't exist
   //400 comment invalid datatype
 });
