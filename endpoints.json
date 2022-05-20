@@ -20,6 +20,26 @@
     "exampleResponse": {
       "reviews": [
         {
+          "review_id": 8,
+          "title": "One Night Ultimate Werewolf",
+          "category": "social deduction",
+          "designer": "Akihisa Okui",
+          "owner": "mallionaire",
+          "review_body": "We couldn't find the werewolf!",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          "created_at": "2021-01-18T10:01:41.251Z",
+          "votes": 5,
+          "comment_count": 0
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review:id": {
+    "description": "serves a review with the matching id provided",
+    "queries": [],
+    "exampleResponse": {
+      "review": [
+        {
           "title": "One Night Ultimate Werewolf",
           "designer": "Akihisa Okui",
           "owner": "happyamy2016",
@@ -27,6 +47,20 @@
           "category": "hidden-roles",
           "created_at": 1610964101251,
           "votes": 5
+        }
+      ]
+    }
+  },
+
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "dav3rid",
+          "name": "dave",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
         }
       ]
     }

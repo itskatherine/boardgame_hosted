@@ -15,10 +15,12 @@ const {
 } = require("./controllers/error.controller");
 const { getUsers } = require("./controllers/users.controller");
 const { deleteComment } = require("./controllers/comments.controller");
+const { getAPI } = require("./controllers/api.controller");
 
 const app = express();
 app.use(express.json());
 
+app.get("/api", getAPI);
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewById);
 
