@@ -454,3 +454,14 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("GET /api", () => {
+  test("Should return a JSON object containing info for all available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).not.toBe(undefined);
+      });
+  });
+});
