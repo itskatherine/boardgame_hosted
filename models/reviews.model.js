@@ -51,6 +51,7 @@ const updateReviewById = (id, newVote) => {
 
 const fetchReviews = (sort_by = "created_at", order = "DESC", category) => {
   order = order.toUpperCase();
+
   let categoryQueryLine = "";
   const validSortBys = [
     "owner",
@@ -83,10 +84,11 @@ const fetchReviews = (sort_by = "created_at", order = "DESC", category) => {
       if (category) {
         if (!allCategoriesInDB.includes(category)) {
           return Promise.reject({
-            status: 400,
+            status: 404,
             msg: "Invalid category filter",
           });
         } else {
+          category = category.replace("'", "''");
           categoryQueryLine = ` WHERE category = '${category}' `;
         }
       }

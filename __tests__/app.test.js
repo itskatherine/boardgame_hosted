@@ -316,12 +316,21 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  test("400: If given invalid category to filter by, should return error message", () => {
+  test("404: If given invalid category to filter by, should return error message", () => {
     return request(app)
       .get("/api/reviews?category=katherine")
-      .expect(400)
+      .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Invalid category filter");
+      });
+  });
+
+  test("200: category exists but no reviews exist with it", () => {
+    return request(app)
+      .get("/api/reviews?category=children%27s%20games")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.reviews).toEqual([]);
       });
   });
 });
